@@ -114,7 +114,7 @@ def main(access_key, secret_key, folder_dict, scanner_dict, policies_dict, \
             tag_pair = config.get(section, 'tag_target_pair')
             if tag_pair != '':
                 # Remove any leading and/or trailing white space around
-                # the commas in the comma-delimited tag_pair string. # NOTE:
+                # the commas in the comma-delimited tag_pair string. Note
                 # that this will not adversely effect tag values that have
                 # spaces in them (e.g. Office:San Francisco).
                 tag_pair = re.sub('\s{0,},\s{0,}', ',', tag_pair)
