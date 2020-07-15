@@ -7,3 +7,5 @@ documentation/
 __pycache__/
 chain/*.pyc
 logs/
+SECURITY.md
+.github/*
