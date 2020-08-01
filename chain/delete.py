@@ -46,11 +46,16 @@ def get_scan_names(headers):
 # Function to get scan id's
 def get_scan_ids(headers):
     """Get scanner ID's from IO"""
-    url = "https://cloud.tenable.com/scans"
-    response = requests.request("GET", url, headers=headers)
-    pretty_json = json.loads(response.text)
-    data = (json.dumps(pretty_json, indent=2))
-    data_dict = json.loads(data)
+    try:
+        url = "https://cloud.tenable.com/scans"
+        response = requests.request("GET", url, headers=headers)
+        pretty_json = json.loads(response.text)
+        data = (json.dumps(pretty_json, indent=2))
+        data_dict = json.loads(data)
+
+    except requests.HTTPError as e:
+        logger.info(f'ERROR - {e}')
+        sys.exit()
 
     cntr = 0
     for scan in data_dict['scans']:
@@ -67,9 +72,15 @@ def delete_scans(headers):
         if scan_name in scan_id_dict:
             scan_id = scan_id_dict[scan_name]
             scan_name = '"'.join([scan_name])
-            url = f"https://cloud.tenable.com/scans/{scan_id}"
-            response = requests.request("DELETE", url, headers=headers)
-            logger.info(f'Deleting scan "{scan_name}" with scan_id {scan_id}')
+            try:
+                url = f"https://cloud.tenable.com/scans/{scan_id}"
+                response = requests.request("DELETE", url, headers=headers)
+                response.raise_for_status()
+                logger.info(f'Deleting scan "{scan_name}" with scan_id {scan_id}')
+
+            except requests.HTTPError as e:
+                logger.info(f'ERROR - {e}')
+                sys.exit()
         else:
             logger.info('This scan does not exist in IO. Skipping ' \
                         f'DELETE API call for: "{scan_name}"')

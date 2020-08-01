@@ -57,15 +57,20 @@ def create_scans(policy_uuid, scan_name, description, policy_id, folder_id,
         payload = re.sub('\s+', ' ', payload)
         logger.info(f'Payload is: {payload}')
 
-        url = "https://cloud.tenable.com/scans"
-        response = requests.request("POST", url, data=payload, headers=headers)
+        try:
+            url = "https://cloud.tenable.com/scans"
+            response = requests.request("POST", url, data=payload, headers=headers)
+            response.raise_for_status()
+            logger.info(f'The scan \"{scan_name}\" has been created')
+            # A delay is not required, but is good to tread lightly on the API
+            # and avoice rate limiting isues. See the following URL:
+            # https://developer.tenable.com/docs/rate-limiting
+            logger.info('Pausing for 1 second before the next API call....')
+            time.sleep(1)
 
-        logger.info(f'The scan \"{scan_name}\" has been created')
-        # A delay is not required, but is good to tread lightly on the API
-        # and avoice rate limiting isues. See the following URL:
-        # https://developer.tenable.com/docs/rate-limiting
-        logger.info('Pausing for 1 second before the next API call....')
-        time.sleep(1)
+        except requests.HTTPError as e:
+            logger.info(f'ERROR - {e}')
+            sys.exit()
 # End function
 
 # main function

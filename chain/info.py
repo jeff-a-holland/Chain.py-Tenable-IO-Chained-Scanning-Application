@@ -3,6 +3,7 @@
 
 # Import libraries
 import json
+import sys
 import logging
 from logging.config import fileConfig
 import requests
@@ -25,10 +26,14 @@ tag_dict = {}
 def get_folders(headers):
     """Get folder ID's from IO"""
     url = "https://cloud.tenable.com/folders"
-    response = requests.request("GET", url, headers=headers)
-    pretty_json = json.loads(response.text)
-    data = (json.dumps(pretty_json, indent=2))
-    data_dict = json.loads(data)
+    try:
+        response = requests.request("GET", url, headers=headers)
+        pretty_json = json.loads(response.text)
+        data = (json.dumps(pretty_json, indent=2))
+        data_dict = json.loads(data)
+    except requests.HTTPError as e:
+        logger.info(f'ERROR - {e}')
+        sys.exit()
 
     for policies in data_dict:
         length = len(data_dict['folders'])
@@ -51,10 +56,14 @@ def get_folders(headers):
 def get_scanners(headers):
     """Get scanner ID's from IO"""
     url = "https://cloud.tenable.com/scanners"
-    response = requests.request("GET", url, headers=headers)
-    pretty_json = json.loads(response.text)
-    data = (json.dumps(pretty_json, indent=2))
-    data_dict = json.loads(data)
+    try:
+        response = requests.request("GET", url, headers=headers)
+        pretty_json = json.loads(response.text)
+        data = (json.dumps(pretty_json, indent=2))
+        data_dict = json.loads(data)
+    except requests.HTTPError as e:
+        logger.info(f'ERROR - {e}')
+        sys.exit()
 
     for scanners in data_dict:
         length = len(data_dict['scanners'])
@@ -72,10 +81,14 @@ def get_scanners(headers):
 def get_policies(headers):
     """Get policy ID's from IO"""
     url = "https://cloud.tenable.com/policies"
-    response = requests.request("GET", url, headers=headers)
-    pretty_json = json.loads(response.text)
-    data = (json.dumps(pretty_json, indent=2))
-    data_dict = json.loads(data)
+    try:
+        response = requests.request("GET", url, headers=headers)
+        pretty_json = json.loads(response.text)
+        data = (json.dumps(pretty_json, indent=2))
+        data_dict = json.loads(data)
+    except requests.HTTPError as e:
+        logger.info(f'ERROR - {e}')
+        sys.exit()
 
     for policies in data_dict:
         length = len(data_dict['policies'])
@@ -97,10 +110,14 @@ def get_policies(headers):
 def get_tags(headers):
     """Get tag data from IO for using in scans.ini"""
     url = "https://cloud.tenable.com/tags/values"
-    response = requests.request("GET", url, headers=headers)
-    pretty_json = json.loads(response.text)
-    data = (json.dumps(pretty_json, indent=2))
-    data_dict = json.loads(data)
+    try:
+        response = requests.request("GET", url, headers=headers)
+        pretty_json = json.loads(response.text)
+        data = (json.dumps(pretty_json, indent=2))
+        data_dict = json.loads(data)
+    except requests.HTTPError as e:
+        logger.info(f'ERROR - {e}')
+        sys.exit()
 
     for values in data_dict:
         length = len(data_dict['values'])

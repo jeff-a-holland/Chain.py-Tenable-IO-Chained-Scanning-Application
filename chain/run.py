@@ -52,8 +52,14 @@ def get_scan_names():
 # Function to run scan
 def run_scan(scan_id, headers):
     """Run scans defined in scans.ini config file"""
-    url = f"https://cloud.tenable.com/scans/{scan_id}/launch"
-    response = requests.request("POST", url, headers=headers)
+    try:
+        url = f"https://cloud.tenable.com/scans/{scan_id}/launch"
+        response = requests.request("POST", url, headers=headers)
+        response.raise_for_status()
+
+    except requests.HTTPError as e:
+        logger.info(f'ERROR - {e}')
+        sys.exit()
 # End function
 
 # Funtion to check scan status
@@ -63,10 +69,15 @@ def check_scan_status(scan_id, scan_status, headers):
     while scan_status == 'running' or scan_status == 'pending' or \
           scan_status == 'None':
         url = f"https://cloud.tenable.com/scans/{scan_id}"
-        response = requests.request("GET", url, headers=headers)
-        pretty_json = json.loads(response.text)
-        data3 = (json.dumps(pretty_json, indent=2))
-        data_dict3 = json.loads(data3)
+        try:
+            response = requests.request("GET", url, headers=headers)
+            pretty_json = json.loads(response.text)
+            data3 = (json.dumps(pretty_json, indent=2))
+            data_dict3 = json.loads(data3)
+
+        except requests.HTTPError as e:
+            logger.info(f'ERROR - {e}')
+            sys.exit()
 
         # Don't need a condition for 'None' as scan status is now either
         # pending, running, or completed
@@ -102,13 +113,19 @@ def main(access_key, secret_key):
     # Call function to get scan names from scans.ini file
     get_scan_names()
     # Get list of scans
-    url = "https://cloud.tenable.com/scans"
-    response = requests.request("GET", url, headers=headers)
-    pretty_json = json.loads(response.text)
-    data = (json.dumps(pretty_json, indent=2))
-    data_dict = json.loads(data)
-    length = len(data_dict['scans'])
-    logger.info(f'Number of total scans in IO instance is: {length}')
+    try:
+        url = "https://cloud.tenable.com/scans"
+        response = requests.request("GET", url, headers=headers)
+        pretty_json = json.loads(response.text)
+        data = (json.dumps(pretty_json, indent=2))
+        data_dict = json.loads(data)
+        length = len(data_dict['scans'])
+        response.raise_for_status()
+        logger.info(f'Number of total scans in IO instance is: {length}')
+
+    except requests.HTTPError as e:
+        logger.info(f'ERROR - {e}')
+        sys.exit()
 
     # Beginning of the section that runs scans
     logger.info('Running the following scans in a chained manner,' \
@@ -161,11 +178,17 @@ def main(access_key, secret_key):
     # Populate previous_scan_history_list so we can check later if a second
     # instantiation of the scripts still has any scans running
     for scan_id in chained_scan_id_list:
-        url = f"https://cloud.tenable.com/scans/{scan_id}"
-        response = requests.request("GET", url, headers=headers)
-        pretty_json = json.loads(response.text)
-        data2 = (json.dumps(pretty_json, indent=2))
-        data_dict2 = json.loads(data2)
+        try:
+            url = f"https://cloud.tenable.com/scans/{scan_id}"
+            response = requests.request("GET", url, headers=headers)
+            pretty_json = json.loads(response.text)
+            data2 = (json.dumps(pretty_json, indent=2))
+            data_dict2 = json.loads(data2)
+
+        except requests.HTTPError as e:
+            logger.info(f'ERROR - {e}')
+            sys.exit()
+
         if data_dict2['history'] != []:
             previous_scan_history_list.append( \
             data_dict2['history'][0]['status'])
@@ -173,11 +196,16 @@ def main(access_key, secret_key):
     # Iterate over the chained_scan_id_list again, this time using
     # the list previous_scan_history_list built above
     for scan_id in chained_scan_id_list:
-        url = f"https://cloud.tenable.com/scans/{scan_id}"
-        response = requests.request("GET", url, headers=headers)
-        pretty_json = json.loads(response.text)
-        data4 = (json.dumps(pretty_json, indent=2))
-        data_dict4 = json.loads(data4)
+        try:
+            url = f"https://cloud.tenable.com/scans/{scan_id}"
+            response = requests.request("GET", url, headers=headers)
+            pretty_json = json.loads(response.text)
+            data4 = (json.dumps(pretty_json, indent=2))
+            data_dict4 = json.loads(data4)
+
+        except requests.HTTPError as e:
+            logger.info(f'ERROR - {e}')
+            sys.exit()
 
         if data_dict4['history'] != []:
             dict_val_as_str = str(data_dict4['history'][0]['status'])
