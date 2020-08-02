@@ -98,8 +98,8 @@ Figure 1. Execution of chain.py using the command "./chain.py --action create-ru
 
 ### Todo's
 
- - Test with a password safe such as HashiCorp Vault
- - Create a unit test suite for use in a CI pipeline
+ - Test with a password safe such as HashiCorp Vault.
+ - Create a unit test suite for use in a CI pipeline.
  - Add an "update" module to update existing scans instead of deleting and recreating them. Recreating scans deletes the scan history from the IO backend. If all you want to do is add an email address to the notifications parameter, an update scan module would be useful.
 
 ### License
