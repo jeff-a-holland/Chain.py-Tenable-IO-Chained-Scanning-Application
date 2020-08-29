@@ -3,7 +3,7 @@ LICENSE.md
 README.md
 .env
 images/
-#documentation/
+documentation/
 __pycache__/
 chain/*.pyc
 logs/
