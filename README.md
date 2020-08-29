@@ -40,11 +40,12 @@ Chain.py requires the following Python modules and libraries to run:
 - time
 - dotenv
 
-NOTE: All but dotenv are in the Python standard library. To install dotenv, run:
+NOTE: All but dotenv and requests are in the Python standard library. To install, run:
 
 
 ```sh
 $ pip install python-dotenv
+$ pip install requests
 ```
 
 ### Usage
